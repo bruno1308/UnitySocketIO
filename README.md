@@ -34,9 +34,6 @@ void onLogin(byte[] args)
         Debug.Log("I am logged");
     }
 ```
-* [plugins/googledrive/README.md] [PlGd]
-* [plugins/onedrive/README.md] [PlOd]
-
 ### Development
 
 Want to contribute? Great!
