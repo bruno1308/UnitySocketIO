@@ -17,7 +17,13 @@ using UnitySocket;
 ```
 Socket socket = IO.Socket("127.0.0.1", 9000, new Emitter.Listener(onConnect));
 ```
-Where the parameters are the server ip, the server port, and a callback for handling when you are first connected.
+Where the parameters are the server ip, the server port, and a callback for handling when you are first connected with a byte array sent by the server to you, like this:
+```
+void onConnect(byte[] args)
+{
+        Debug.Log("I am awesome and I am connected");
+}
+```
 * For Emitting commands to the server:
 ```
 socket.Emit(OPCODE, data);
