@@ -45,6 +45,9 @@ This project is a long way from being finished, anyone is welcome to help.
  - Everything,
  - but mainly the server code
  
+### Thanks
+Thanks to [dillinger] that provided an awesome tool to format github READ.me, I had no idea how to do it.
+
 License
 ----
 
@@ -56,3 +59,4 @@ MIT
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
    [Socket IO]: <http://socket.io>
+   [dillinger]: <http://dillinger.io>
