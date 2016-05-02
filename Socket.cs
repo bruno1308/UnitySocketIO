@@ -45,11 +45,14 @@ namespace UnitySocket
         public void Disconnect()
         {
             Debug.Log("Disconnecting");
-            this.Emit(OpCodeEmit.DISCONNECT, null);
+            //this.Emit(OpCodeEmit.DISCONNECT, null);
             callbacks.Clear();
             // Release the socket.
-            client.Shutdown(SocketShutdown.Both);
-            client.Close();
+            if (client != null)
+            {
+                client.Shutdown(SocketShutdown.Both);
+                client.Close();
+            }
         }
 
         private void StartClient()
@@ -175,6 +178,7 @@ namespace UnitySocket
         {
             try
             {
+                Debug.Log("Receive callback ");
 
                 // Retrieve the state object and the client socket 
                 // from the asynchronous state object.
@@ -182,18 +186,26 @@ namespace UnitySocket
                 System.Net.Sockets.Socket client = state.workSocket;
                 // Read data from the remote device.
                 int bytesRead = client.EndReceive(ar);
+                Debug.Log("bytes read: "+bytesRead.ToString());
                 if (bytesRead > 0)
                 {
                     if (state.expected == -1)
                     {
-                        //state.expected = state.buffer[0];
-                        state.expected = 14;
+                        state.expected = PacketUtils.GetSizeFromOpCodeReceived((OpCodeReceive)state.buffer[0]);
                     }
                     state.offset += bytesRead;
+                    Debug.Log("state offset: " + state.offset.ToString());
                     // Get the rest of the data.
                     if (state.offset < state.expected)
-                        client.BeginReceive(state.buffer, state.offset, StateObject.BufferSize, 0,
+                    {
+                        Debug.Log("State.buffer = " + state.buffer.Length.ToString());
+                        Debug.Log("State.offset = " + state.offset.ToString());
+                        Debug.Log("StateObject.Buffersize = " + StateObject.BufferSize.ToString());
+
+                        client.BeginReceive(state.buffer, state.offset, StateObject.BufferSize-state.offset, 0,
                             new AsyncCallback(ReceiveCallback), state);
+                        Debug.Log("lesser than expected");
+                    }
                     else if (state.offset == state.expected)
                         finishRead(state);
                     else
@@ -218,8 +230,8 @@ namespace UnitySocket
 
         private void finishRead(StateObject state)
         {
-            OpCodeReceive opCode = ((OpCodeReceive)state.buffer[0]);
             Debug.Log("Received a total number of byes of: " + state.offset);
+            OpCodeReceive opCode = ((OpCodeReceive)state.buffer[0]);
             if (state.offset > 0 && callbacks.ContainsKey(opCode))
                 callbacks[opCode].call(state.buffer);
             else
